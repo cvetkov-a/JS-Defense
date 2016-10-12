@@ -142,7 +142,7 @@ window.onload = function(){function init(){
             if(ammoManCount==0)
             {ammoManOn = true;}
         }
-	if(partialSoldiers>2 && partialSoldiers%3==0){
+	if(partialSoldiers%3==0 && partialSoldiers>2){
             if(bombExists==false){
 	    bomb.x=soldier.x+15;
 	    bombExists=true;
