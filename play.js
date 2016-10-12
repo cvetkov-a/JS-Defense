@@ -16,6 +16,7 @@ window.onload = function(){function init(){
     let soldiersGetAway = 0;
     let gotAway = true;
     let shotsSucceeded=0;
+    let partialSoldiers=0;
     let speed = 1;
     let ammoManCount = 0;
     let bombExists = false;
@@ -106,6 +107,7 @@ window.onload = function(){function init(){
 	    bullets-=1;
 	    bombsDetonated++; 
         bombCounter=0;
+        partialSoldiers+=0.5;
 	}
     }
     function animatedSoldiers(){
@@ -140,7 +142,7 @@ window.onload = function(){function init(){
             if(ammoManCount==0)
             {ammoManOn = true;}
         }
-	if(shotsSucceeded>2 && shotsSucceeded%3==0){
+	if(partialSoldiers>2 && partialSoldiers%3==0){
             if(bombExists==false){
 	    bomb.x=soldier.x+15;
 	    bombExists=true;
@@ -190,7 +192,9 @@ window.onload = function(){function init(){
             case (bombCounter>400 && bombCounter<450 && bomb.y<300):ctx.fillText("1",bomb.x,bomb.y)
                 break;
             case (bombCounter>450 && bombCounter<500 && bomb.y<300):ctx.fillText("0",bomb.x,bomb.y)
+                break;
         }
+        partialSoldiers=shotsSucceeded;
         if(bullets>0 && soldiersGetAway<6 && bombCounter<500)
         requestAnimationFrame(animatedSoldiers);
         else{
@@ -199,8 +203,9 @@ window.onload = function(){function init(){
             ctx.fillStyle = 'black'
             ctx.fillRect(0,0,800,600);
             ctx.fillStyle = 'white'
-            if(bullets>0 && soldiersGetAway==6)
-                ctx.fillText(`You lost. Lots of enemies went through your defence.`,120,300)
+            if(bullets>0 && soldiersGetAway==6) {
+                ctx.fillText(`You lost. Lots of enemies went through your defence.`, 70, 300)
+            }
                 else if(bombCounter>=500)
             ctx.fillText(`You lost. A bomb exploded.`,250,300)
             else
