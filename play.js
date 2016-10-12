@@ -1,5 +1,22 @@
-window.onload = function(){function init(){
+window.onload = function(){
     let ctx = document.getElementById(('canvas')).getContext('2d');
+    let gameStarted = false;
+    let play = document.getElementById('play');
+    window.addEventListener('click', playResult)
+    function playResult(){
+        if(gameStarted == false)
+            if(event.clientX>=280 && event.clientX<=280+retry.width
+                && event.clientY>=350 && event.clientY<=350+retry.height) {
+                gameStarted = true;
+                ctx.clearRect(0,0,800,600)
+                init();
+            }
+    }
+    ctx.fillStyle='black';
+    ctx.fillRect(0,0,800,600);
+    ctx.drawImage(play,280,350)
+    
+    function init(){
     let image = document.getElementById('wall')
     let soldier2 = document.getElementById('soldier');
     let wallBack = document.getElementById('wallBack');
@@ -21,6 +38,7 @@ window.onload = function(){function init(){
     let ammoManCount = 0;
     let bombExists = false;
     let bombCounter = 0;
+    let createdBombs =0;
     window.addEventListener('click', result)
     window.addEventListener('click', retryResult)
     window.addEventListener('click', ammoResult)
@@ -28,12 +46,12 @@ window.onload = function(){function init(){
     let ammoManOn = false;
     let dead = false;
     animatedSoldiers();
-    function retryResult(){
-        if(dead)
-        if(event.clientX>=280 && event.clientX<=280+retry.width
-            && event.clientY>=350 && event.clientY<=350+retry.height)
-            init();
-    }
+        function retryResult(){
+            if(dead)
+                if(event.clientX>=280 && event.clientX<=280+retry.width
+                    && event.clientY>=350 && event.clientY<=350+retry.height)
+                    init();
+        }
     function result(){
         if(
             (event.clientX<soldier.x+38
@@ -104,9 +122,8 @@ window.onload = function(){function init(){
             ctx.drawImage(wallBack,0,0,800,600,0,0,800,600)
             ctx.drawImage(image,0,344)
 	    bombExists=false;
-	    bullets-=1;
 	    bombsDetonated++; 
-        bombCounter=0;
+        bombCounter++;
         partialSoldiers+=0.5;
 	}
     }
@@ -142,12 +159,14 @@ window.onload = function(){function init(){
             if(ammoManCount==0)
             {ammoManOn = true;}
         }
-	if(partialSoldiers%3==0 && partialSoldiers>2){
+	if(partialSoldiers%3==0 && partialSoldiers!=0){
             if(bombExists==false){
 	    bomb.x=soldier.x+15;
 	    bombExists=true;
             }
+
 	}
+        partialSoldiers=shotsSucceeded;
         ctx.drawImage(image,0,344)
         if(upOrDown){
             soldier.y -=speed;
@@ -194,10 +213,10 @@ window.onload = function(){function init(){
             case (bombCounter>450 && bombCounter<500 && bomb.y<300):ctx.fillText("0",bomb.x,bomb.y)
                 break;
         }
-        partialSoldiers=shotsSucceeded;
         if(bullets>0 && soldiersGetAway<6 && bombCounter<500)
         requestAnimationFrame(animatedSoldiers);
         else{
+            ctx.font = "23px arial black"
             dead=true;
             ctx.clearRect(0,0,800,600);
             ctx.fillStyle = 'black'
@@ -209,11 +228,11 @@ window.onload = function(){function init(){
                 else if(bombCounter>=500)
             ctx.fillText(`You lost. A bomb exploded.`,250,300)
             else
-                ctx.fillText(`You lost. You went out of bullets and could resist the attack.`,5,300)
+                ctx.fillText(`You lost. You went out of bullets and couldn't resist the attack.`,5,300)
             ctx.fillText(`Enemies caught: ${shotsSucceeded}`,292,330)
             ctx.drawImage(retry,280,350)
         }
     }
 
 }
-init();}
+}
