@@ -105,6 +105,7 @@ window.onload = function(){function init(){
 	    bombExists=false;
 	    bullets-=1;
 	    bombsDetonated++; 
+        bombCounter=0;
 	}
     }
     function animatedSoldiers(){
