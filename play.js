@@ -5,6 +5,7 @@ window.onload = function(){function init(){
     let wallBack = document.getElementById('wallBack');
     let ammoMan = document.getElementById('healAmmo');
     let bomb2 = document.getElementById('bomb');
+    let retry = document.getElementById('retry');
     let bomb = {x:20, y:344}
     let soldier = {x:20, y:344}
     let ammoManObj = {x:20, y:-210}
@@ -20,10 +21,18 @@ window.onload = function(){function init(){
     let bombExists = false;
     let bombCounter = 0;
     window.addEventListener('click', result)
+    window.addEventListener('click', retryResult)
     window.addEventListener('click', ammoResult)
     window.addEventListener('click', bombResult)
     let ammoManOn = false;
+    let dead = false;
     animatedSoldiers();
+    function retryResult(){
+        if(dead)
+        if(event.clientX>=280 && event.clientX<=280+retry.width
+            && event.clientY>=350 && event.clientY<=350+retry.height)
+            init();
+    }
     function result(){
         if(
             (event.clientX<soldier.x+38
@@ -184,6 +193,7 @@ window.onload = function(){function init(){
         if(bullets>0 && soldiersGetAway<6 && bombCounter<500)
         requestAnimationFrame(animatedSoldiers);
         else{
+            dead=true;
             ctx.clearRect(0,0,800,600);
             ctx.fillStyle = 'black'
             ctx.fillRect(0,0,800,600);
@@ -193,8 +203,9 @@ window.onload = function(){function init(){
                 else if(bombCounter>=500)
             ctx.fillText(`You lost. A bomb exploded.`,250,300)
             else
-                ctx.fillText(`You lost. You went out of bullets and could resist the attack.`,75,300)
+                ctx.fillText(`You lost. You went out of bullets and could resist the attack.`,5,300)
             ctx.fillText(`Enemies caught: ${shotsSucceeded}`,292,330)
+            ctx.drawImage(retry,280,350)
         }
     }
 
