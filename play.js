@@ -83,11 +83,36 @@ window.onload = function(){function init(){
         }
         bullets-=1/2;
     }
+    function bombResult(){
+	if(event.clientX<=bomb.x + bomb2.width
+            && event.clientX>=bomb.x
+            && event.clientY<=bomb.y + bomb2.height
+            && event.clientY>=bomb.y){
+	    ctx.clearRect(bomb.x,bomb.y,bomb2.width,bomb2.height)
+            bomb.y=344;
+            bomb.x=20;
+            ctx.drawImage(wallBack,0,0,800,600,0,0,800,600)
+            ctx.drawImage(image,0,344)
+	    bombExists=false;
+	    bullets-=1;
+	    bombsDetonated++; 
+	}
     }
     function animatedSoldiers(){
         ctx.clearRect(soldier.x,260,soldier2.width,84)
         ctx.drawImage(wallBack,0,0,800,600,0,0,800,600)
         ctx.drawImage(soldier2,soldier.x,soldier.y)
+	if(bombExists){
+	    ctx.drawImage(bomb2,bomb.x,bomb.y)
+	    if(bomb.y>100)
+            bomb.y-=5;
+        if(bombCounter>=500){
+            bombCounter=0;
+        }
+        else{
+            bombCounter++;
+        }
+	}
         if(ammoManOn == true){
             ctx.drawImage(ammoMan, ammoManObj.x, ammoManObj.y);
             ammoManObj.y+=5;
@@ -141,8 +166,22 @@ window.onload = function(){function init(){
         ctx.fillText(`Soldiers caught: ${shotsSucceeded}`,10,500)
         ctx.fillText(`Bullets left: ${bullets}`,10,530)
         ctx.fillText(`Soldiers who got away: ${soldiersGetAway}`,10,560)
+	ctx.fillText(`Bombs detonated: ${bombsDetonated}`,10,590)
         ctx.font="30px arial black"
-        if(bullets>0 && soldiersGetAway<6)
+        switch(true){
+            case (bombCounter>1 && bombCounter<100 && bomb.y<300):ctx.fillText("5",bomb.x,bomb.y)
+                break;
+            case (bombCounter>100 && bombCounter<200 && bomb.y<300):ctx.fillText("4",bomb.x,bomb.y)
+                break;
+            case (bombCounter>200 && bombCounter<300 && bomb.y<300):ctx.fillText("3",bomb.x,bomb.y)
+                break;
+            case (bombCounter>300 && bombCounter<400 && bomb.y<300):ctx.fillText("2",bomb.x,bomb.y)
+                break;
+            case (bombCounter>400 && bombCounter<450 && bomb.y<300):ctx.fillText("1",bomb.x,bomb.y)
+                break;
+            case (bombCounter>450 && bombCounter<500 && bomb.y<300):ctx.fillText("0",bomb.x,bomb.y)
+        }
+        if(bullets>0 && soldiersGetAway<6 && bombCounter<500)
         requestAnimationFrame(animatedSoldiers);
         else{
             ctx.clearRect(0,0,800,600);
@@ -151,6 +190,8 @@ window.onload = function(){function init(){
             ctx.fillStyle = 'white'
             if(bullets>0 && soldiersGetAway==6)
                 ctx.fillText(`You lost. Lots of enemies went through your defence.`,120,300)
+                else if(bombCounter>=500)
+            ctx.fillText(`You lost. A bomb exploded.`,250,300)
             else
                 ctx.fillText(`You lost. You went out of bullets and could resist the attack.`,75,300)
             ctx.fillText(`Enemies caught: ${shotsSucceeded}`,292,330)
