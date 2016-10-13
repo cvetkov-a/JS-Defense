@@ -2,6 +2,7 @@ window.onload = function(){
     let ctx = document.getElementById(('canvas')).getContext('2d');
     let gameStarted = false;
     let play = document.getElementById('play');
+    let bgplay = document.getElementById('bgplay');
     window.addEventListener('click', playResult)
     function playResult(){
         if(gameStarted == false)
@@ -13,45 +14,56 @@ window.onload = function(){
             }
     }
     ctx.fillStyle='black';
-    ctx.fillRect(0,0,800,600);
+    ctx.drawImage(bgplay,0,0);
     ctx.drawImage(play,280,350)
     
     function init(){
     let image = document.getElementById('wall')
-    let soldier2 = document.getElementById('soldier');
     let wallBack = document.getElementById('wallBack');
+
+    let soldier2 = document.getElementById('soldier');
     let ammoMan = document.getElementById('healAmmo');
     let bomb2 = document.getElementById('bomb');
+
     let retry = document.getElementById('retry');
+
     let bomb = {x:20, y:344}
     let soldier = {x:20, y:344}
     let ammoManObj = {x:20, y:-210}
+
     let upOrDown = true;
+    let gotAway = true;
+    let bombExists = false;
+
     let bombsDetonated = 0;
     let br = 0;
-    let bullets = 10;
+    let bullets = 15;
     let soldiersGetAway = 0;
-    let gotAway = true;
+
     let shotsSucceeded=0;
     let partialSoldiers=0;
     let speed = 1;
     let ammoManCount = 0;
-    let bombExists = false;
+
     let bombCounter = 0;
-    let createdBombs =0;
+
     window.addEventListener('click', result)
     window.addEventListener('click', retryResult)
     window.addEventListener('click', ammoResult)
     window.addEventListener('click', bombResult)
+
     let ammoManOn = false;
     let dead = false;
     animatedSoldiers();
+		// NEW GAME
         function retryResult(){
             if(dead)
                 if(event.clientX>=280 && event.clientX<=280+retry.width
                     && event.clientY>=350 && event.clientY<=350+retry.height)
                     init();
         }
+		
+		// KILL SOLDIER
     function result(){
         if(
             (event.clientX<soldier.x+38
@@ -83,6 +95,8 @@ window.onload = function(){
         }
         bullets-=1/2;
     }
+	
+		//KILL AMMOMAN
     function ammoResult(){
         if(
             (
@@ -111,6 +125,8 @@ window.onload = function(){
         }
         bullets-=1/2;
     }
+	
+		// DETONATE BOMB
     function bombResult(){
 	if(event.clientX<=bomb.x + bomb2.width
             && event.clientX>=bomb.x
@@ -125,12 +141,16 @@ window.onload = function(){
 	    bombsDetonated++; 
         bombCounter++;
         partialSoldiers+=0.5;
+		bombCounter=0;
 	}
     }
+	
+		// DRAW EVERYTHING
     function animatedSoldiers(){
         ctx.clearRect(soldier.x,260,soldier2.width,84)
         ctx.drawImage(wallBack,0,0,800,600,0,0,800,600)
         ctx.drawImage(soldier2,soldier.x,soldier.y)
+		//BOMB CHECK
 	if(bombExists){
 	    ctx.drawImage(bomb2,bomb.x,bomb.y)
 	    if(bomb.y>100)
@@ -192,13 +212,15 @@ window.onload = function(){
 	ctx.font = "30px arial black";
 	ctx.fillText(`Warning ${bullets} bullets left!`,240,390)
 	}
-	ctx.fillStyle='white';
+	    ctx.fillStyle='white';
         ctx.font = "20px arial black"
         ctx.fillText(`Soldiers caught: ${shotsSucceeded}`,10,500)
         ctx.fillText(`Bullets left: ${bullets}`,10,530)
         ctx.fillText(`Soldiers who got away: ${soldiersGetAway}`,10,560)
-	ctx.fillText(`Bombs detonated: ${bombsDetonated}`,10,590)
-        ctx.font="30px arial black"
+	    ctx.fillText(`Bombs detonated: ${bombsDetonated}`,10,590)
+        ctx.font = "30px arial black"
+
+        // BOMB COUNTER
         switch(true){
             case (bombCounter>1 && bombCounter<100 && bomb.y<300):ctx.fillText("5",bomb.x,bomb.y)
                 break;
@@ -213,6 +235,7 @@ window.onload = function(){
             case (bombCounter>450 && bombCounter<500 && bomb.y<300):ctx.fillText("0",bomb.x,bomb.y)
                 break;
         }
+		// DEAD CHECK
         if(bullets>0 && soldiersGetAway<6 && bombCounter<500)
         requestAnimationFrame(animatedSoldiers);
         else{
